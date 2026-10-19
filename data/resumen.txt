@@ -1,4 +1,18 @@
-ERROR partidos: [Errno 2] No such file or directory: 'data/raw-partidos.json'
-Equipos: 30
-ATL https://a.espncdn.com/i/teamlogos/nba/500/atl.png
-Posiciones, claves: ['uid', 'id', 'name', 'abbreviation', 'shortName', 'children', 'isConference', 'season', 'links', 'seasons']
+hoy -> HTTP 200, bytes: 40555
+dia -> HTTP 200, bytes: 40495
+rango -> HTTP 400, bytes: 80
+rangolimit -> HTTP 400, bytes: 80
+== data/prueba-dia.json
+Partidos: 3
+2026-10-20T19:00Z ['DET', 'BOS'] [['NBC']] ['NBC']
+2026-10-20T23:00Z ['NY', 'PHI'] [['NBC']] ['ERADM', 'NBC']
+2026-10-21T01:30Z ['SA', 'OKC'] [['NBC']] ['NBC']
+== data/prueba-hoy.json
+Partidos: 3
+2026-10-20T19:00Z ['DET', 'BOS'] [['NBC']] ['NBC']
+2026-10-20T23:00Z ['NY', 'PHI'] [['NBC']] ['ERADM', 'NBC']
+2026-10-21T01:30Z ['SA', 'OKC'] [['NBC']] ['NBC']
+== data/prueba-rango.json
+ERROR: 'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte
+== data/prueba-rangolimit.json
+ERROR: 'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte
