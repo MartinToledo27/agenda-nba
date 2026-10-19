@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda NBA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{
+  box-sizing:border-box;
+  --bg:#F6F5F2;--surface:#FFFFFF;--ink:#111111;--mute:#5E5E5A;--line:#E0DED8;--prime:#1D428A;--disney:#C8102E;--hbo:#111111;--none:#8E8E88;--live:#E8590C;--fav:#F26B1D;--orange:#F26B1D;
+  --fd:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --fb:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0C0C0D;--surface:#171718;--ink:#F5F4F0;--mute:#A3A29C;--line:#2B2B2E;--prime:#5B8DEF;--disney:#FF5A5F;--hbo:#F5F4F0;--none:#7A7A75;--live:#FF8A3D;--fav:#FF7A2B;--orange:#FF7A2B}
+}
+:root[data-theme="dark"]{--bg:#0C0C0D;--surface:#171718;--ink:#F5F4F0;--mute:#A3A29C;--line:#2B2B2E;--prime:#5B8DEF;--disney:#FF5A5F;--hbo:#F5F4F0;--none:#7A7A75;--live:#FF8A3D;--fav:#FF7A2B;--orange:#FF7A2B}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.4 var(--fb);-webkit-text-size-adjust:100%}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:18px 16px 22px;border-radius:14px;position:relative;overflow:hidden;background:radial-gradient(rgba(255,255,255,.13) 1.2px,transparent 1.7px) 0 0/10px 10px,#111}
+h1{font:700 36px/1 var(--fd);margin:0;letter-spacing:.01em;color:#fff}
+.sub{color:rgba(255,255,255,.72);font-size:14px;margin-top:4px}
+.demo{margin:10px 0 0;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;color:var(--mute);font-size:13px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:12px}
+nav button{flex:1;background:none;border:0;border-bottom:3px solid transparent;color:var(--mute);font:600 18px/1 var(--fd);padding:12px 4px 10px;cursor:pointer}
+nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--orange)}
+button:focus-visible{outline:2px solid var(--prime);outline-offset:2px}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:500 14px/1 var(--fb);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:disabled{opacity:.45;cursor:default}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+.panel h3{font:600 17px/1 var(--fd);margin:4px 0 8px}
+.teams{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.teams .chip{padding:6px 10px;font-size:13px}
+.teams .chip[aria-pressed="true"]{background:var(--fav);border-color:var(--fav);color:#101828}
+.day{margin-top:22px}
+.day h2{font:700 26px/1 var(--fd);margin:0}
+.day .date{color:var(--mute);font-size:13px;margin:3px 0 8px}
+.game{display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--none);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.game.prime{border-left-color:var(--prime)}
+.game.disney{border-left-color:var(--disney)}
+.game.fav{box-shadow:inset 0 0 0 2px var(--fav)}
+.time{font:600 26px/1 var(--fd);font-variant-numeric:tabular-nums}
+.time small{display:block;font:500 12px/1.2 var(--fb);color:var(--mute);margin-top:3px}
+.live{color:var(--live)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--live);margin-right:5px;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+.tm{display:flex;justify-content:space-between;gap:10px;font-weight:500}
+.tm+.tm{margin-top:2px}
+.tm .sc{font:600 20px/1 var(--fd);font-variant-numeric:tabular-nums}
+.tm.w{font-weight:600}
+.star{color:var(--fav)}
+.tag{font-size:12px;font-weight:600;padding:4px 8px;border-radius:6px;color:#fff;background:var(--none);white-space:nowrap}
+.tag.prime{background:var(--prime)}
+.tag.disney{background:var(--disney)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tag{color:#0E131B}}
+:root[data-theme="dark"] .tag{color:#0E131B}
+.empty{padding:28px 8px;text-align:center;color:var(--mute)}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);font-size:15px}
+th{font:600 14px/1 var(--fd);color:var(--mute)}
+th:nth-child(2),td:nth-child(2){text-align:left;width:100%}
+td:first-child,th:first-child{text-align:left;color:var(--mute)}
+tr:last-child td{border-bottom:0}
+tr.fav td:nth-child(2){font-weight:600}
+.scroll{overflow-x:auto}
+.cut td{border-bottom:2px solid var(--ink)}
+h2.conf{font:700 24px/1 var(--fd);margin:22px 0 8px}
+.game.hbo{border-left-color:var(--hbo)}
+.tag.hbo{background:var(--hbo)}
+.bd{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-family:var(--fd);font-weight:700;flex:none;letter-spacing:.02em}
+.nm{display:flex;align-items:center;gap:8px}
+.big{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 12px 10px;margin-bottom:10px}
+.big.fav{box-shadow:inset 0 0 0 2px var(--fav)}
+.bg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;text-align:center}
+.side{display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:500}
+.side .sc{font:700 52px/1 var(--fd);font-variant-numeric:tabular-nums}
+.side.lose{opacity:.5}
+.side.win{font-weight:600}
+.side.win .bd{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--fav)}
+.wp{background:var(--fav);color:#101828;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+.mid{font:600 15px/1 var(--fd);color:var(--mute)}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:var(--mute)}
+details.mo{margin-top:16px}
+summary{font:700 22px/1 var(--fd);cursor:pointer;padding:6px 0}
+.cr{display:grid;grid-template-columns:42px 1fr 1fr;gap:8px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.cr .dt{color:var(--mute);font-size:12px}
+.cr .t{display:flex;align-items:center;gap:6px;font-weight:600}
+.cr .t b{margin-left:auto;font:600 17px/1 var(--fd)}
+.cr .t.l{font-weight:400;opacity:.6}
+.cut2 td{border-bottom:2px dashed var(--mute)}
+.legend{color:var(--mute);font-size:12px;margin:8px 0 0}
+.sel{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 15px var(--fb)}
+[hidden]{display:none!important}
+header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,#C8102E,#1D428A,#C8102E) 0 0/320px 100%;animation:bar 6s linear infinite}
+@keyframes bar{to{background-position:320px 0}}
+header svg{flex:none;animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){header::after,header svg{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>Agenda NBA</h1><div class="sub">Horario de Argentina</div></div>
+    <svg viewBox="0 0 64 64" width="54" height="54" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#F26B1D" stroke="#111" stroke-width="2"/><g fill="none" stroke="#111" stroke-width="2.4"><path d="M2 32h60M32 2v60"/><path d="M10 10c14 10 14 34 0 44M54 10c-14 10-14 34 0 44"/></g></svg>
+  </header>
+  <div class="demo">Partidos reales con horario de Argentina. Las plataformas salen de lo que muestran HBO Max, Disney+ y Prime hasta hoy; lo que no aparece todavía no está cargado. Al destildar el filtro se ven también los partidos solo de League Pass (lista parcial hasta que conectemos los datos completos). Resultados y posiciones se llenan cuando empiece la temporada.</div>
+  <nav role="tablist" id="tabs">
+    <button role="tab" data-tab="agenda" aria-selected="true">Agenda</button>
+    <button role="tab" data-tab="resultados" aria-selected="false">Resultados</button>
+    <button role="tab" data-tab="posiciones" aria-selected="false">Posiciones</button>
+  </nav>
+  <div class="ctrl" id="ctrl">
+    <button class="chip" id="fPlat" aria-pressed="true">Solo con transmisión</button>
+    <button class="chip" id="bTeams" aria-pressed="false">Elegir mis equipos</button>
+  </div>
+  <div class="ctrl" id="rctrl" hidden><select id="selT" class="sel" aria-label="Filtrar por equipo"></select></div>
+  <div id="panel" class="panel" hidden></div>
+  <main id="main"></main>
+</div>
+<script>
+const TZ='America/Argentina/Buenos_Aires';
+const TEAMS={
+ E:[['ATL','Hawks'],['BOS','Celtics'],['BKN','Nets'],['CHA','Hornets'],['CHI','Bulls'],['CLE','Cavaliers'],['DET','Pistons'],['IND','Pacers'],['MIA','Heat'],['MIL','Bucks'],['NYK','Knicks'],['ORL','Magic'],['PHI','76ers'],['TOR','Raptors'],['WAS','Wizards']],
+ W:[['DAL','Mavericks'],['DEN','Nuggets'],['GSW','Warriors'],['HOU','Rockets'],['LAC','Clippers'],['LAL','Lakers'],['MEM','Grizzlies'],['MIN','Timberwolves'],['NOP','Pelicans'],['OKC','Thunder'],['PHX','Suns'],['POR','Trail Blazers'],['SAC','Kings'],['SAS','Spurs'],['UTA','Jazz']]
+};
+const NAME={};[...TEAMS.E,...TEAMS.W].forEach(([a,n])=>NAME[a]=n);
+const PLAT={prime:'Prime Video',disney:'Disney+',hbo:'HBO Max',tbd:'Por confirmar',none:'Solo League Pass'};
+// [díaRelativo, hora, min, visitante, local, plataforma, estado, ptsVis, ptsLoc, reloj]
+const RAW=[
+ [10,20,16,0,'BOS','DET','hbo'],
+ [10,20,20,0,'PHI','NYK','hbo'],
+ [10,20,22,30,'OKC','SAS','hbo'],
+ [10,21,20,30,'MIN','MIA','disney'],
+ [10,21,23,0,'GSW','LAL','disney'],
+ [10,22,20,0,'CLE','PHI','disney'],
+ [10,22,22,30,'DEN','OKC','disney'],
+ [10,23,19,30,'NYK','BOS','prime'],
+ [10,23,22,30,'HOU','SAS','prime'],
+ [10,30,20,0,'NYK','PHI','prime'],
+ [10,30,23,0,'LAL','GSW','prime'],
+ [11,6,21,0,'PHI','CLE','prime'],
+ [10,21,20,0,'ATL','ORL','none'],
+ [10,21,20,0,'MIL','WAS','none'],
+ [10,21,20,30,'CHI','TOR','none'],
+ [10,21,20,30,'CHA','BKN','none'],
+ [10,21,21,0,'UTA','MEM','none'],
+ [10,23,17,0,'CHI','MIL','none'],
+ [10,23,20,0,'ATL','CHA','none'],
+ [10,23,20,0,'DAL','IND','none'],
+ [10,23,20,0,'MIN','ORL','none'],
+ [10,23,20,0,'TOR','WAS','none'],
+ [10,23,21,0,'DET','MIA','none']
+];
+const key=d=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+const [Y,M,D]=key(new Date()).split('-').map(Number);
+const GAMES=RAW.map(r=>({t:new Date(Date.UTC(2026,r[0]-1,r[1],r[2]+3,r[3])),a:r[4],h:r[5],p:r[6],st:'sched'}));
+const todayK=key(new Date(Date.UTC(Y,M-1,D,12)));
+const dayDiff=k=>{const[a,b,c]=k.split('-').map(Number);return Math.round((Date.UTC(a,b-1,c)-Date.UTC(Y,M-1,D))/864e5)};
+const hhmm=d=>d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:TZ});
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const dayLabel=k=>{const n=dayDiff(k);const d=new Date(Date.UTC(Y,M-1,D+n,12));
+  const wd=cap(d.toLocaleDateString('es-AR',{weekday:'long',timeZone:TZ}));
+  return n===0?'Hoy':n===1?'Mañana':n===-1?'Ayer':wd};
+const dayDate=k=>{const n=dayDiff(k);return new Date(Date.UTC(Y,M-1,D+n,12)).toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',timeZone:TZ})};
+
+let favs=new Set();
+try{favs=new Set(JSON.parse(localStorage.getItem('nba_favs')||'[]'))}catch(e){}
+const saveFavs=()=>{try{localStorage.setItem('nba_favs',JSON.stringify([...favs]))}catch(e){}};
+const S={tab:'agenda',plat:true,team:'all',panel:false};
+const $=id=>document.getElementById(id);
+const isFav=g=>favs.has(g.a)||favs.has(g.h);
+const hue=a=>[...a].reduce((x,c)=>x*31+c.charCodeAt(0),7)%360;
+const bd=(a,z=24)=>`<span class="bd" style="width:${z}px;height:${z}px;background:hsl(${hue(a)} 55% 38%);font-size:${Math.round(z*.36)}px" aria-hidden="true">${a}</span>`;
+function big(g){
+  const live=g.st==='live',wa=!live&&g.sa>g.sh,wh=!live&&g.sh>g.sa;
+  const side=(t,v,w,l)=>`<div class="side${w?' win':''}${l?' lose':''}">${bd(t,56)}<span>${NAME[t]}</span><span class="sc">${v}</span>${w?'<span class="wp">Ganó</span>':''}</div>`;
+  return `<div class="big${isFav(g)?' fav':''}"><div class="bg">${side(g.a,g.sa,wa,wh)}<div class="mid${live?' live':''}">${live?'<span class="dot"></span>En vivo':'Final'}</div>${side(g.h,g.sh,wh,wa)}</div><div class="foot"><span>${live?g.clk:dayLabel(key(g.t))+' '+hhmm(g.t)}</span><span class="tag ${g.p}">${PLAT[g.p]}</span></div></div>`;
+}
+function cr(g){
+  const wa=g.sa>g.sh;
+  const t=(a,v,w)=>`<span class="t${w?'':' l'}">${bd(a,22)}${a}<b>${v}</b></span>`;
+  return `<div class="cr"><span class="dt">${g.t.toLocaleDateString('es-AR',{day:'numeric',month:'numeric',timeZone:TZ})}</span>${t(g.a,g.sa,wa)}${t(g.h,g.sh,!wa)}</div>`;
+}
+function results(){
+  const all=GAMES.filter(g=>g.st!=='sched').filter(g=>S.team==='all'||(S.team==='mine'?(!favs.size||isFav(g)):(g.a===S.team||g.h===S.team)));
+  if(!all.length)return '<div class="empty">No hay resultados para este filtro.</div>';
+  const recent=all.filter(g=>g.st==='live'||dayDiff(key(g.t))>=-1).sort((a,b)=>b.t-a.t);
+  const m=new Map();
+  all.filter(g=>!recent.includes(g)).sort((a,b)=>b.t-a.t).forEach(g=>{const k=key(g.t).slice(0,7);if(!m.has(k))m.set(k,[]);m.get(k).push(g)});
+  let h=recent.length?`<section class="day"><h2>Últimos resultados</h2><div class="date">Hoy y ayer</div>${recent.map(big).join('')}</section>`:'';
+  [...m.entries()].forEach(([k,gs],i)=>{const [y,mo]=k.split('-').map(Number);
+    const lab=cap(new Date(Date.UTC(y,mo-1,15)).toLocaleDateString('es-AR',{month:'long',year:'numeric',timeZone:'UTC'}));
+    h+=`<details class="mo"${i===0?' open':''}><summary>${lab} (${gs.length})</summary>${gs.map(cr).join('')}</details>`});
+  return h;
+}
+
+function group(list,desc){
+  const m=new Map();
+  list.forEach(g=>{const k=key(g.t);if(!m.has(k))m.set(k,[]);m.get(k).push(g)});
+  return [...m.entries()].sort((a,b)=>desc?b[0].localeCompare(a[0]):a[0].localeCompare(b[0]));
+}
+function row(g){
+  const live=g.st==='live',fin=g.st==='final';
+  const star=t=>favs.has(t)?'<span class="star" aria-label="equipo favorito">★ </span>':'';
+  const wa=fin&&g.sa>g.sh,wh=fin&&g.sh>g.sa;
+  const left=live?`<div class="time live"><span class="dot"></span>En vivo<small>${g.clk}</small></div>`
+    :fin?`<div class="time">Final<small>${hhmm(g.t)}</small></div>`
+    :`<div class="time">${hhmm(g.t)}</div>`;
+  const sc=(v)=>(live||fin)?`<span class="sc">${v}</span>`:'';
+  return `<div class="game ${g.p}${isFav(g)?' fav':''}">${left}
+   <div><div class="tm${wa?' w':''}"><span class="nm">${star(g.a)}${bd(g.a)}${NAME[g.a]}</span>${sc(g.sa)}</div>
+   <div class="tm${wh?' w':''}"><span class="nm">${star(g.h)}${bd(g.h)}${NAME[g.h]}</span>${sc(g.sh)}</div></div>
+   <span class="tag ${g.p}">${PLAT[g.p]}</span></div>`;
+}
+function days(list,desc,empty){
+  if(!list.length)return `<div class="empty">${empty}</div>`;
+  return group(list,desc).map(([k,gs])=>`<section class="day"><h2>${dayLabel(k)}</h2><div class="date">${dayDate(k)}</div>${gs.sort((a,b)=>a.t-b.t).map(row).join('')}</section>`).join('');
+}
+function standings(){
+  const tbl=(arr,label)=>{
+    const rows=arr.map(([a,n],i)=>{const w=0,l=0;
+      return `<tr class="${favs.has(a)?'fav':''}${i===5?' cut':''}${i===9?' cut2':''}"><td>${i+1}</td><td><span class="nm">${favs.has(a)?'<span class="star">★ </span>':''}${bd(a,22)}${n}</span></td><td>${w}</td><td>${l}</td><td>–</td></tr>`}).join('');
+    return `<h2 class="conf">${label}</h2><div class="scroll"><table><thead><tr><th>#</th><th>Equipo</th><th>G</th><th>P</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  };
+  return tbl(TEAMS.E,'Conferencia Este')+tbl(TEAMS.W,'Conferencia Oeste')+'<p class="legend">La tabla se ordena cuando haya partidos jugados. Línea llena: clasificados directos a playoffs (1 a 6). Línea punteada: zona de play-in (7 a 10).</p>';
+}
+function render(){
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===S.tab));
+  $('ctrl').hidden=S.tab!=='agenda';
+  $('rctrl').hidden=S.tab!=='resultados';
+  if(S.tab==='resultados'){
+    const o=a=>a.map(([c,n])=>`<option value="${c}"${S.team===c?' selected':''}>${n}</option>`).join('');
+    $('selT').innerHTML=`<option value="all">Todos los equipos</option>${favs.size?`<option value="mine"${S.team==='mine'?' selected':''}>Mis equipos</option>`:''}<optgroup label="Este">${o(TEAMS.E)}</optgroup><optgroup label="Oeste">${o(TEAMS.W)}</optgroup>`;
+  }
+  $('fPlat').setAttribute('aria-pressed',S.plat);
+  $('bTeams').setAttribute('aria-pressed',S.panel);
+  $('bTeams').textContent=favs.size?`Mis equipos (${favs.size})`:'Elegir mis equipos';
+  $('panel').hidden=!(S.panel&&S.tab==='agenda');
+  if(S.panel){
+    const chips=arr=>arr.map(([a,n])=>`<button class="chip" data-t="${a}" aria-pressed="${favs.has(a)}">${n}</button>`).join('');
+    $('panel').innerHTML=`<h3>Este</h3><div class="teams">${chips(TEAMS.E)}</div><h3>Oeste</h3><div class="teams">${chips(TEAMS.W)}</div>`;
+  }
+  let h='';
+  if(S.tab==='agenda'){
+    let l=GAMES.filter(g=>g.st!=='final');
+    if(S.plat)l=l.filter(g=>g.p!=='none');
+    h=days(l,false,'No hay partidos con estos filtros. Probá sacar alguno.');
+  }else if(S.tab==='resultados'){
+    h=results();
+  }else h=standings();
+  $('main').innerHTML=h;
+}
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.tab=b.dataset.tab;render()});
+$('fPlat').onclick=()=>{S.plat=!S.plat;render()};
+$('selT').onchange=e=>{S.team=e.target.value;render()};
+$('bTeams').onclick=()=>{S.panel=!S.panel;render()};
+$('panel').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;
+  const t=b.dataset.t;favs.has(t)?favs.delete(t):favs.add(t);
+  saveFavs();render()});
+render();
+</script>
+</body>
+</html>
