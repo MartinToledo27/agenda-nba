@@ -32,7 +32,7 @@ partidos = {p["id"]: p for p in viejo.get("partidos", [])}
 logos = dict(viejo.get("logos", {}))
 ahora = datetime.now(timezone.utc)
 hoy = (ahora - timedelta(hours=3)).date()
-dias = range(-1, 2) if MODO == "rapido" else range(-2, 15)
+dias = range(-1, 2) if MODO == "rapido" else range(-2, 31)
 
 
 def plataforma(canales, clave):
@@ -80,23 +80,23 @@ for i in dias:
         except Exception as ex:
             print("Partido salteado", ex)
 
-posiciones = viejo.get("posiciones", {})
-try:
-    s = get("https://site.api.espn.com/apis/v2/sports/basketball/nba/standings")
-    nuevo_pos = {}
-    for ch in s.get("children", []):
-        k = "E" if "East" in ch.get("name", "") else "W"
-        filas = []
-        for en in ch["standings"]["entries"]:
-            st = {x["name"]: x.get("value") for x in en.get("stats", [])}
-            filas.append({"a": n(en["team"]["abbreviation"]), "w": int(st.get("wins") or 0),
-                          "l": int(st.get("losses") or 0), "seed": st.get("playoffSeed") or 99})
-        filas.sort(key=lambda f: (f["seed"], -f["w"], f["l"]))
-        nuevo_pos[k] = [{"a": f["a"], "w": f["w"], "l": f["l"]} for f in filas]
-    if nuevo_pos:
-        posiciones = nuevo_pos
-except Exception as ex:
-    print("Fallaron las posiciones", ex)
+ESTE = {"ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DET", "IND", "MIA", "MIL", "NYK", "ORL", "PHI", "TOR", "WAS"}
+OESTE = {"DAL", "DEN", "GSW", "HOU", "LAC", "LAL", "MEM", "MIN", "NOP", "OKC", "PHX", "POR", "SAC", "SAS", "UTA"}
+rec = {t: [0, 0] for t in ESTE | OESTE}
+for p in partidos.values():
+    if p["st"] == "final" and p["a"] in rec and p["h"] in rec:
+        gana, pierde = (p["a"], p["h"]) if p["sa"] > p["sh"] else (p["h"], p["a"])
+        rec[gana][0] += 1
+        rec[pierde][1] += 1
+
+
+def tabla(conf):
+    f = [{"a": t, "w": rec[t][0], "l": rec[t][1]} for t in conf]
+    f.sort(key=lambda x: (-(x["w"] / (x["w"] + x["l"]) if x["w"] + x["l"] else 0), -x["w"], x["a"]))
+    return f
+
+
+posiciones = {"E": tabla(ESTE), "W": tabla(OESTE)}
 
 base = {k: v for k, v in viejo.items() if k != "actualizado"}
 nuevo = {"logos": logos, "partidos": sorted(partidos.values(), key=lambda p: p["t"]), "posiciones": posiciones}
