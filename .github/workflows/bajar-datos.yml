@@ -12,43 +12,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Descargar datos de ESPN
+      - name: Probar direcciones de partidos
         run: |
           mkdir -p data
           B="https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
-          curl -sS -f -A "Mozilla/5.0" "$B/scoreboard?dates=20261020-20261026&limit=200" -o data/raw-partidos.json || echo "FALLO: partidos"
-          curl -sS -f -A "Mozilla/5.0" "$B/teams?limit=40" -o data/raw-equipos.json || echo "FALLO: equipos"
-          curl -sS -f -A "Mozilla/5.0" "https://site.api.espn.com/apis/v2/sports/basketball/nba/standings" -o data/raw-posiciones.json || echo "FALLO: posiciones"
-          ls -la data
+          : > data/resumen.txt
+          probar() {
+            code=$(curl -sS -A "Mozilla/5.0" -o "data/prueba-$1.json" -w "%{http_code}" "$2" || echo "000")
+            echo "$1 -> HTTP $code, bytes: $(wc -c < "data/prueba-$1.json" 2>/dev/null)" | tee -a data/resumen.txt
+          }
+          probar hoy "$B/scoreboard"
+          probar dia "$B/scoreboard?dates=20261020"
+          probar rango "$B/scoreboard?dates=20261020-20261026"
+          probar rangolimit "$B/scoreboard?dates=20261020-20261026&limit=200"
 
       - name: Armar resumen
         run: |
-          python3 - <<'PY' > data/resumen.txt
-          import json
-          try:
-              d = json.load(open('data/raw-partidos.json'))
-              ev = d.get('events', [])
-              print('Partidos encontrados:', len(ev))
-              for e in ev[:12]:
-                  c = e['competitions'][0]
-                  eq = [t['team']['abbreviation'] for t in c['competitors']]
-                  canales = [b.get('names') for b in c.get('broadcasts', [])]
-                  geo = [x.get('media', {}).get('shortName') for x in c.get('geoBroadcasts', [])]
-                  print(e['date'], eq, canales, geo)
-          except Exception as x:
-              print('ERROR partidos:', x)
-          try:
-              t = json.load(open('data/raw-equipos.json'))
-              eqs = t['sports'][0]['leagues'][0]['teams']
-              print('Equipos:', len(eqs))
-              print(eqs[0]['team']['abbreviation'], eqs[0]['team'].get('logos', [{}])[0].get('href'))
-          except Exception as x:
-              print('ERROR equipos:', x)
-          try:
-              s = json.load(open('data/raw-posiciones.json'))
-              print('Posiciones, claves:', list(s.keys()))
-          except Exception as x:
-              print('ERROR posiciones:', x)
+          python3 - <<'PY' >> data/resumen.txt
+          import json, glob
+          for f in sorted(glob.glob('data/prueba-*.json')):
+              print('==', f)
+              try:
+                  d = json.load(open(f))
+                  ev = d.get('events', [])
+                  print('Partidos:', len(ev))
+                  for e in ev[:8]:
+                      c = e['competitions'][0]
+                      eq = [t['team']['abbreviation'] for t in c['competitors']]
+                      canales = [b.get('names') for b in c.get('broadcasts', [])]
+                      geo = [x.get('media', {}).get('shortName') for x in c.get('geoBroadcasts', [])]
+                      print(e['date'], eq, canales, geo)
+              except Exception as x:
+                  print('ERROR:', x)
           PY
           cat data/resumen.txt
 
@@ -57,5 +52,5 @@ jobs:
           git config user.name "robot-agenda"
           git config user.email "robot-agenda@users.noreply.github.com"
           git add data
-          git commit -m "Datos de prueba" || echo "Sin cambios"
+          git commit -m "Datos de prueba 2" || echo "Sin cambios"
           git push
