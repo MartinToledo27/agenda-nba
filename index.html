@@ -164,7 +164,7 @@ const RAW=[
 ];
 const key=d=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
 const [Y,M,D]=key(new Date()).split('-').map(Number);
-const GAMES=RAW.map(r=>({t:new Date(Date.UTC(2026,r[0]-1,r[1],r[2]+3,r[3])),a:r[4],h:r[5],p:r[6],st:'sched'}));
+let GAMES=RAW.map(r=>({t:new Date(Date.UTC(2026,r[0]-1,r[1],r[2]+3,r[3])),a:r[4],h:r[5],p:r[6],st:'sched'}));
 const todayK=key(new Date(Date.UTC(Y,M-1,D,12)));
 const dayDiff=k=>{const[a,b,c]=k.split('-').map(Number);return Math.round((Date.UTC(a,b-1,c)-Date.UTC(Y,M-1,D))/864e5)};
 const hhmm=d=>d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:TZ});
@@ -181,7 +181,9 @@ const S={tab:'agenda',plat:true,team:'all',panel:false};
 const $=id=>document.getElementById(id);
 const isFav=g=>favs.has(g.a)||favs.has(g.h);
 const hue=a=>[...a].reduce((x,c)=>x*31+c.charCodeAt(0),7)%360;
-const bd=(a,z=24)=>`<span class="bd" style="width:${z}px;height:${z}px;background:hsl(${hue(a)} 55% 38%);font-size:${Math.round(z*.36)}px" aria-hidden="true">${a}</span>`;
+let LOGO={},STAND=null;
+const bd=(a,z=24)=>LOGO[a]?`<span class="bd" style="width:${z}px;height:${z}px;background:#fff;padding:2px;box-sizing:border-box"><img src="${LOGO[a]}" alt="" style="width:100%;height:100%;object-fit:contain" onerror="this.parentNode.style.cssText='width:${z}px;height:${z}px;background:hsl(${hue(a)} 55% 38%);font-size:${Math.round(z*.36)}px';this.parentNode.textContent='${a}'"></span>`:bd0(a,z);
+const bd0=(a,z=24)=>`<span class="bd" style="width:${z}px;height:${z}px;background:hsl(${hue(a)} 55% 38%);font-size:${Math.round(z*.36)}px" aria-hidden="true">${a}</span>`;
 function big(g){
   const live=g.st==='live',wa=!live&&g.sa>g.sh,wh=!live&&g.sh>g.sa;
   const side=(t,v,w,l)=>`<div class="side${w?' win':''}${l?' lose':''}">${bd(t,56)}<span>${NAME[t]}</span><span class="sc">${v}</span>${w?'<span class="wp">Ganó</span>':''}</div>`;
@@ -229,11 +231,12 @@ function days(list,desc,empty){
 }
 function standings(){
   const tbl=(arr,label)=>{
-    const rows=arr.map(([a,n],i)=>{const w=0,l=0;
-      return `<tr class="${favs.has(a)?'fav':''}${i===5?' cut':''}${i===9?' cut2':''}"><td>${i+1}</td><td><span class="nm">${favs.has(a)?'<span class="star">★ </span>':''}${bd(a,22)}${n}</span></td><td>${w}</td><td>${l}</td><td>–</td></tr>`}).join('');
+    const rows=arr.map(([a,n,w,l],i)=>{const pj=w+l;
+      return `<tr class="${favs.has(a)?'fav':''}${i===5?' cut':''}${i===9?' cut2':''}"><td>${i+1}</td><td><span class="nm">${favs.has(a)?'<span class="star">★ </span>':''}${bd(a,22)}${n}</span></td><td>${w}</td><td>${l}</td><td>${pj?(w/pj).toFixed(3).replace(/^0/,''):'–'}</td></tr>`}).join('');
     return `<h2 class="conf">${label}</h2><div class="scroll"><table><thead><tr><th>#</th><th>Equipo</th><th>G</th><th>P</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   };
-  return tbl(TEAMS.E,'Conferencia Este')+tbl(TEAMS.W,'Conferencia Oeste')+'<p class="legend">La tabla se ordena cuando haya partidos jugados. Línea llena: clasificados directos a playoffs (1 a 6). Línea punteada: zona de play-in (7 a 10).</p>';
+  const ord=(k,b)=>STAND&&STAND[k]&&STAND[k].length?STAND[k].map(x=>[x.a,NAME[x.a]||x.a,x.w,x.l]):b.map(([a,n])=>[a,n,0,0]);
+  return tbl(ord('E',TEAMS.E),'Conferencia Este')+tbl(ord('W',TEAMS.W),'Conferencia Oeste')+'<p class="legend">Línea llena: clasificados directos a playoffs (1 a 6). Línea punteada: zona de play-in (7 a 10).</p>';
 }
 function render(){
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===S.tab));
@@ -269,6 +272,13 @@ $('panel').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(
   const t=b.dataset.t;favs.has(t)?favs.delete(t):favs.add(t);
   saveFavs();render()});
 render();
+fetch('data.json?'+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+  LOGO=d.logos||{};STAND=d.posiciones||null;
+  GAMES=(d.partidos||[]).map(g=>({t:new Date(g.t),a:g.a,h:g.h,p:g.p,st:g.st,sa:g.sa,sh:g.sh,clk:g.clk}));
+  const m=document.querySelector('.demo');
+  if(m)m.textContent='Datos del '+new Date(d.actualizado).toLocaleString('es-AR',{timeZone:TZ,day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})+' (hora de Argentina). Se bajan solos de ESPN; HBO Max es una estimación y se puede corregir a mano.';
+  render();
+}).catch(()=>{});
 </script>
 </body>
 </html>
