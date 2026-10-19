@@ -1,5 +1,5 @@
-hoy -> HTTP 200, bytes: 40555
-dia -> HTTP 200, bytes: 40495
+hoy -> HTTP 200, bytes: 40543
+dia -> HTTP 200, bytes: 40483
 rango -> HTTP 400, bytes: 80
 rangolimit -> HTTP 400, bytes: 80
 == data/prueba-dia.json
