@@ -1,0 +1,4 @@
+ERROR partidos: [Errno 2] No such file or directory: 'data/raw-partidos.json'
+Equipos: 30
+ATL https://a.espncdn.com/i/teamlogos/nba/500/atl.png
+Posiciones, claves: ['uid', 'id', 'name', 'abbreviation', 'shortName', 'children', 'isConference', 'season', 'links', 'seasons']
