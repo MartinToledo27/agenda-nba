@@ -1,0 +1,33 @@
+name: Actualizar datos
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+    - cron: '0 8 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Bajar y armar datos
+        run: |
+          MODO=rapido
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.schedule }}" = "0 8 * * *" ]; then MODO=completo; fi
+          python3 actualizar.py $MODO
+
+      - name: Guardar si hay cambios
+        run: |
+          git config user.name "robot-agenda"
+          git config user.email "robot-agenda@users.noreply.github.com"
+          git add data.json
+          git diff --cached --quiet || (git commit -m "Actualizar datos" && git push)
