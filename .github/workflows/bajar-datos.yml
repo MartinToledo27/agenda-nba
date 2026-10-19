@@ -12,38 +12,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Probar direcciones de partidos
+      - name: Bajar partidos dia por dia
         run: |
-          mkdir -p data
+          mkdir -p data/dias
           B="https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
           : > data/resumen.txt
-          probar() {
-            code=$(curl -sS -A "Mozilla/5.0" -o "data/prueba-$1.json" -w "%{http_code}" "$2" || echo "000")
-            echo "$1 -> HTTP $code, bytes: $(wc -c < "data/prueba-$1.json" 2>/dev/null)" | tee -a data/resumen.txt
-          }
-          probar hoy "$B/scoreboard"
-          probar dia "$B/scoreboard?dates=20261020"
-          probar rango "$B/scoreboard?dates=20261020-20261026"
-          probar rangolimit "$B/scoreboard?dates=20261020-20261026&limit=200"
+          for i in $(seq 0 13); do
+            d=$(date -u -d "2026-10-20 +$i day" +%Y%m%d)
+            code=$(curl -sS --compressed -A "Mozilla/5.0" -o "data/dias/$d.json" -w "%{http_code}" "$B/scoreboard?dates=$d" || echo "000")
+            [ "$code" != "200" ] && echo "$d -> HTTP $code" | tee -a data/resumen.txt
+          done
+          ls data/dias | wc -l | xargs echo "Archivos de dias:" | tee -a data/resumen.txt
 
       - name: Armar resumen
         run: |
           python3 - <<'PY' >> data/resumen.txt
           import json, glob
-          for f in sorted(glob.glob('data/prueba-*.json')):
-              print('==', f)
+          from datetime import datetime, timedelta
+          for f in sorted(glob.glob('data/dias/*.json')):
               try:
                   d = json.load(open(f))
-                  ev = d.get('events', [])
-                  print('Partidos:', len(ev))
-                  for e in ev[:8]:
-                      c = e['competitions'][0]
-                      eq = [t['team']['abbreviation'] for t in c['competitors']]
-                      canales = [b.get('names') for b in c.get('broadcasts', [])]
-                      geo = [x.get('media', {}).get('shortName') for x in c.get('geoBroadcasts', [])]
-                      print(e['date'], eq, canales, geo)
               except Exception as x:
-                  print('ERROR:', x)
+                  print(f, 'ERROR', x)
+                  continue
+              for e in d.get('events', []):
+                  c = e['competitions'][0]
+                  t = datetime.fromisoformat(e['date'].replace('Z', '+00:00')) - timedelta(hours=3)
+                  cs = c['competitors']
+                  away = [x['team']['abbreviation'] for x in cs if x.get('homeAway') == 'away']
+                  home = [x['team']['abbreviation'] for x in cs if x.get('homeAway') == 'home']
+                  can = [n for b in c.get('broadcasts', []) for n in b.get('names', [])]
+                  print(t.strftime('%d/%m %H:%M'), away, '@', home, can)
           PY
           cat data/resumen.txt
 
@@ -52,5 +51,5 @@ jobs:
           git config user.name "robot-agenda"
           git config user.email "robot-agenda@users.noreply.github.com"
           git add data
-          git commit -m "Datos de prueba 2" || echo "Sin cambios"
+          git commit -m "Datos de prueba 3" || echo "Sin cambios"
           git push
