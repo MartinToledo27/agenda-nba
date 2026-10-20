@@ -292,13 +292,42 @@ $('panel').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(
   const t=b.dataset.t;favs.has(t)?favs.delete(t):favs.add(t);
   saveFavs();render()});
 render();
-fetch('data.json?'+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(d=>{
-  LOGO=d.logos||{};STAND=d.posiciones||null;
-  GAMES=(d.partidos||[]).map(g=>({t:new Date(g.t),a:g.a,h:g.h,p:g.p,st:g.st,sa:g.sa,sh:g.sh,clk:g.clk}));
-  const m=document.querySelector('.demo');
-  if(m)m.textContent='Datos del '+new Date(d.actualizado).toLocaleString('es-AR',{timeZone:TZ,day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})+' (hora de Argentina). Se bajan solos de ESPN; HBO Max es una estimación y se puede corregir a mano.';
-  render();
-}).catch(()=>{});
+const OV={},NRM={NY:'NYK',SA:'SAS',GS:'GSW',NO:'NOP',UTAH:'UTA',WSH:'WAS'};
+let vivoOK=true,tickN=0;
+const aplicar=()=>GAMES.forEach(g=>{const o=OV[g.id];if(o)Object.assign(g,o)});
+function cargar(){
+  return fetch('data.json?'+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+    LOGO=d.logos||{};STAND=d.posiciones||null;
+    GAMES=(d.partidos||[]).map(g=>({id:g.id,t:new Date(g.t),a:g.a,h:g.h,p:g.p,st:g.st,sa:g.sa,sh:g.sh,clk:g.clk}));
+    aplicar();
+    const m=document.querySelector('.demo');
+    if(m)m.textContent='Datos del '+new Date(d.actualizado).toLocaleString('es-AR',{timeZone:TZ,day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})+' (hora de Argentina). Se bajan solos de ESPN; HBO Max es una estimación y se puede corregir a mano. Los partidos en juego se actualizan cada 30 segundos.';
+    render();
+  }).catch(()=>{});
+}
+async function vivo(){
+  const r=await fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard');
+  const d=await r.json();
+  (d.events||[]).forEach(e=>{
+    const c=e.competitions[0],tipo=(e.status||c.status||{}).type||{};
+    const st={pre:'sched',in:'live',post:'final'}[tipo.state]||'sched';
+    const eq={};c.competitors.forEach(x=>eq[x.homeAway]=x);
+    const o={st};
+    if(st!=='sched'){o.sa=+eq.away.score||0;o.sh=+eq.home.score||0}
+    if(st==='live')o.clk=tipo.shortDetail||tipo.detail||'En vivo';
+    OV[e.id]=o;
+  });
+  aplicar();render();
+}
+const caliente=()=>{const n=Date.now();return GAMES.some(g=>g.st==='live'||(g.st==='sched'&&g.t-n<18e5&&n-g.t<144e5))};
+cargar();
+setInterval(async()=>{
+  tickN++;
+  if(caliente()){
+    if(vivoOK){try{await vivo();return}catch(e){vivoOK=false}}
+    if(tickN%2===0)cargar();
+  }else if(tickN%10===0)cargar();
+},30000);
 </script>
 </body>
 </html>
