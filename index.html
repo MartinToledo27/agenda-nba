@@ -191,6 +191,7 @@ const dayDate=k=>{const n=dayDiff(k);return new Date(Date.UTC(Y,M-1,D+n,12)).toL
 let favs=new Set();
 try{favs=new Set(JSON.parse(localStorage.getItem('nba_favs')||'[]'))}catch(e){}
 const saveFavs=()=>{try{localStorage.setItem('nba_favs',JSON.stringify([...favs]))}catch(e){}};
+let listo=false;
 const S={tab:'agenda',plat:true,team:'all',panel:false};
 const $=id=>document.getElementById(id);
 const isFav=g=>favs.has(g.a)||favs.has(g.h);
@@ -282,7 +283,7 @@ function render(){
   }else if(S.tab==='resultados'){
     h=results();
   }else h=standings();
-  $('main').innerHTML=h;
+  $('main').innerHTML=listo?h:'<div class="empty">Cargando…</div>';
 }
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.tab=b.dataset.tab;render()});
 $('fPlat').onclick=()=>{S.plat=!S.plat;render()};
@@ -296,14 +297,16 @@ const OV={},NRM={NY:'NYK',SA:'SAS',GS:'GSW',NO:'NOP',UTAH:'UTA',WSH:'WAS'};
 let vivoOK=true,tickN=0;
 const aplicar=()=>GAMES.forEach(g=>{const o=OV[g.id];if(o)Object.assign(g,o)});
 function cargar(){
-  return fetch('data.json?'+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+  return fetch('data.json?'+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(async d=>{
     LOGO=d.logos||{};STAND=d.posiciones||null;
     GAMES=(d.partidos||[]).map(g=>({id:g.id,t:new Date(g.t),a:g.a,h:g.h,p:g.p,st:g.st,sa:g.sa,sh:g.sh,clk:g.clk}));
     aplicar();
+    listo=true;
     const m=document.querySelector('.demo');
     if(m)m.textContent='Datos del '+new Date(d.actualizado).toLocaleString('es-AR',{timeZone:TZ,day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})+' (hora de Argentina). Se bajan solos de ESPN; HBO Max es una estimación y se puede corregir a mano. Los partidos en juego se actualizan cada 30 segundos.';
+    if(caliente()&&vivoOK){try{await vivo();return}catch(e){vivoOK=false}}
     render();
-  }).catch(()=>{});
+  }).catch(()=>{listo=true;render()});
 }
 async function vivo(){
   const r=await fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard');
