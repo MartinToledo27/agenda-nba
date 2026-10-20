@@ -120,6 +120,11 @@ header svg{flex:none;animation:spin 8s linear infinite}
 .game.fav.hbo .gi{border-left-color:var(--hbo)}
 .big.fav .gi{padding:12px 8px 8px;border-radius:9px}
 @media (prefers-reduced-motion:reduce){.fx b{animation:none}}
+.seg{display:flex;gap:6px}
+.pn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%}
+#pLab{flex:1;text-align:center;font:600 18px/1.1 var(--fd)}
+.rec{color:var(--mute);font-size:14px;margin:10px 0 0}
+.more{display:block;margin:16px auto 0}
 </style>
 </head>
 <body>
@@ -138,7 +143,9 @@ header svg{flex:none;animation:spin 8s linear infinite}
     <button class="chip" id="fPlat" aria-pressed="true">Solo con transmisión</button>
     <button class="chip" id="bTeams" aria-pressed="false">Elegir mis equipos</button>
   </div>
-  <div class="ctrl" id="rctrl" hidden><select id="selT" class="sel" aria-label="Filtrar por equipo"></select></div>
+  <div class="ctrl" id="rctrl" hidden><select id="selT" class="sel" aria-label="Filtrar por equipo"></select>
+    <div class="seg"><button class="chip" id="pDia">Día</button><button class="chip" id="pSem">Semana</button><button class="chip" id="pMes">Mes</button></div>
+    <div class="pn"><button class="chip" id="pPrev" aria-label="Período anterior">‹</button><span id="pLab"></span><button class="chip" id="pNext" aria-label="Período siguiente">›</button></div></div>
   <div id="panel" class="panel" hidden></div>
   <main id="main"></main>
 </div>
@@ -192,7 +199,7 @@ let favs=new Set();
 try{favs=new Set(JSON.parse(localStorage.getItem('nba_favs')||'[]'))}catch(e){}
 const saveFavs=()=>{try{localStorage.setItem('nba_favs',JSON.stringify([...favs]))}catch(e){}};
 let listo=false;
-const S={tab:'agenda',plat:true,team:'all',panel:false};
+const S={tab:'agenda',plat:true,team:'all',panel:false,per:'sem',off:0,more:0};
 const $=id=>document.getElementById(id);
 const isFav=g=>favs.has(g.a)||favs.has(g.h);
 const hue=a=>[...a].reduce((x,c)=>x*31+c.charCodeAt(0),7)%360;
@@ -214,16 +221,26 @@ function cr(g){
   const t=(a,v,w)=>`<span class="t${w?'':' l'}">${bd(a,22)}${a}<b>${v}</b></span>`;
   return `<div class="cr"><span class="dt">${g.t.toLocaleDateString('es-AR',{day:'numeric',month:'numeric',timeZone:TZ})}</span>${t(g.a,g.sa,wa)}${t(g.h,g.sh,!wa)}</div>`;
 }
+function periodo(){
+  const f=d=>d.toLocaleDateString('es-AR',{day:'numeric',month:'long',timeZone:'UTC'});
+  const base=new Date(Date.UTC(Y,M-1,D,12));
+  if(S.per==='dia'){const d=new Date(base.getTime()+S.off*864e5),k=key(d);return{a:k,b:k,lab:S.off===0?'Hoy, '+f(d):cap(dayDate(k))}}
+  if(S.per==='sem'){const d=new Date(base.getTime()+S.off*7*864e5),wd=(d.getUTCDay()+6)%7,a=new Date(d.getTime()-wd*864e5),b=new Date(a.getTime()+6*864e5);return{a:key(a),b:key(b),lab:'Semana del '+f(a)+' al '+f(b)}}
+  const a=new Date(Date.UTC(Y,M-1+S.off,1,12)),b=new Date(Date.UTC(Y,M+S.off,0,12));
+  return{a:key(a),b:key(b),lab:cap(a.toLocaleDateString('es-AR',{month:'long',year:'numeric',timeZone:'UTC'}))};
+}
 function results(){
-  const all=GAMES.filter(g=>g.st!=='sched').filter(g=>S.team==='all'||(S.team==='mine'?(!favs.size||isFav(g)):(g.a===S.team||g.h===S.team)));
-  if(!all.length)return '<div class="empty">No hay resultados para este filtro.</div>';
-  const recent=all.filter(g=>g.st==='live'||dayDiff(key(g.t))>=-1).sort((a,b)=>b.t-a.t);
-  const m=new Map();
-  all.filter(g=>!recent.includes(g)).sort((a,b)=>b.t-a.t).forEach(g=>{const k=key(g.t).slice(0,7);if(!m.has(k))m.set(k,[]);m.get(k).push(g)});
-  let h=recent.length?`<section class="day"><h2>Últimos resultados</h2><div class="date">Hoy y ayer</div>${recent.map(big).join('')}</section>`:'';
-  [...m.entries()].forEach(([k,gs],i)=>{const [y,mo]=k.split('-').map(Number);
-    const lab=cap(new Date(Date.UTC(y,mo-1,15)).toLocaleDateString('es-AR',{month:'long',year:'numeric',timeZone:'UTC'}));
-    h+=`<details class="mo"${i===0?' open':''}><summary>${lab} (${gs.length})</summary>${gs.map(cr).join('')}</details>`});
+  const P=periodo();
+  const okt=g=>S.team==='all'||(S.team==='mine'?(!favs.size||isFav(g)):(g.a===S.team||g.h===S.team));
+  const fin=GAMES.filter(g=>g.st==='final'&&okt(g)&&key(g.t)>=P.a&&key(g.t)<=P.b).sort((x,y)=>y.t-x.t);
+  const liv=GAMES.filter(g=>g.st==='live'&&okt(g));
+  let h='';
+  if(S.team!=='all'&&S.team!=='mine'){const w=fin.filter(g=>(g.a===S.team&&g.sa>g.sh)||(g.h===S.team&&g.sh>g.sa)).length;
+    h+=`<div class="rec">${NAME[S.team]}: ${w} ganados y ${fin.length-w} perdidos en este período</div>`}
+  if(liv.length)h+=`<section class="day"><h2>En vivo</h2>${liv.map(big).join('')}</section>`;
+  if(!fin.length)return h+(liv.length?'':'<div class="empty">No hay resultados en este período.</div>');
+  if(S.per==='dia')return h+`<section class="day">${fin.map(big).join('')}</section>`;
+  group(fin,true).forEach(([k,gs])=>{h+=`<section class="day"><h2>${dayLabel(k)}</h2><div class="date">${dayDate(k)}</div>${gs.map(cr).join('')}</section>`});
   return h;
 }
 
@@ -266,6 +283,10 @@ function render(){
   if(S.tab==='resultados'){
     const o=a=>a.map(([c,n])=>`<option value="${c}"${S.team===c?' selected':''}>${n}</option>`).join('');
     $('selT').innerHTML=`<option value="all">Todos los equipos</option>${favs.size?`<option value="mine"${S.team==='mine'?' selected':''}>Mis equipos</option>`:''}<optgroup label="Este">${o(TEAMS.E)}</optgroup><optgroup label="Oeste">${o(TEAMS.W)}</optgroup>`;
+    const P=periodo(),minK=GAMES.map(g=>key(g.t)).sort()[0]||todayK;
+    $('pLab').textContent=P.lab;
+    [['pDia','dia'],['pSem','sem'],['pMes','mes']].forEach(([id,v])=>$(id).setAttribute('aria-pressed',S.per===v));
+    $('pPrev').disabled=P.a<=minK;$('pNext').disabled=S.off>=0;
   }
   $('fPlat').setAttribute('aria-pressed',S.plat);
   $('bTeams').setAttribute('aria-pressed',S.panel);
@@ -277,9 +298,13 @@ function render(){
   }
   let h='';
   if(S.tab==='agenda'){
-    let l=GAMES.filter(g=>g.st!=='final');
+    let l=GAMES.filter(g=>g.st==='live'||(g.st==='sched'&&key(g.t)>=todayK));
     if(S.plat)l=l.filter(g=>g.p!=='none');
-    h=days(l,false,'No hay partidos con estos filtros. Probá sacar alguno.');
+    const tomK=key(new Date(Date.UTC(Y,M-1,D+1,12))),gr=group(l,false);
+    const rest=gr.filter(([k])=>k>tomK),shown=gr.filter(([k])=>k<=tomK).concat(rest.slice(0,S.more));
+    h=days(shown.flatMap(([k,gs])=>gs),false,'No hay partidos con estos filtros. Probá sacar alguno.');
+    if(shown.length&&!shown.some(([k])=>k===todayK))h='<div class="empty">Hoy no hay más partidos.</div>'+h;
+    if(rest.length>S.more)h+='<button class="chip more" id="bMore">Ver más días</button>';
   }else if(S.tab==='resultados'){
     h=results();
   }else h=standings();
@@ -288,6 +313,10 @@ function render(){
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.tab=b.dataset.tab;render()});
 $('fPlat').onclick=()=>{S.plat=!S.plat;render()};
 $('selT').onchange=e=>{S.team=e.target.value;render()};
+[['pDia','dia'],['pSem','sem'],['pMes','mes']].forEach(([id,v])=>$(id).onclick=()=>{S.per=v;S.off=0;render()});
+$('pPrev').onclick=()=>{S.off--;render()};
+$('pNext').onclick=()=>{if(S.off<0){S.off++;render()}};
+$('main').addEventListener('click',e=>{if(e.target.id==='bMore'){S.more++;render()}});
 $('bTeams').onclick=()=>{S.panel=!S.panel;render()};
 $('panel').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;
   const t=b.dataset.t;favs.has(t)?favs.delete(t):favs.add(t);
