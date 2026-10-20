@@ -106,6 +106,20 @@ header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:5px;ba
 header svg{flex:none;animation:spin 8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){header::after,header svg{animation:none}}
+
+.game.fav,.big.fav{position:relative;overflow:hidden;display:block;padding:4px;border:0;box-shadow:none}
+.fx{position:absolute;inset:0;overflow:hidden}
+.fx b{position:absolute;inset:-120px;background:repeating-linear-gradient(135deg,var(--c1) 0,var(--c2) 60px,var(--c1) 120px);animation:mv 6s linear infinite}
+@keyframes mv{to{transform:translate(85px,85px)}}
+.fx.a{-webkit-mask-image:linear-gradient(115deg,#000 36%,transparent 64%);mask-image:linear-gradient(115deg,#000 36%,transparent 64%)}
+.fx.h{-webkit-mask-image:linear-gradient(115deg,transparent 36%,#000 64%);mask-image:linear-gradient(115deg,transparent 36%,#000 64%)}
+.gi{position:relative;background:var(--surface);background:color-mix(in srgb,var(--surface) 80%,transparent);border-radius:5px}
+.game.fav .gi{display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:center;padding:10px 12px 10px 14px;border-left:5px solid var(--none)}
+.game.fav.prime .gi{border-left-color:var(--prime)}
+.game.fav.disney .gi{border-left-color:var(--disney)}
+.game.fav.hbo .gi{border-left-color:var(--hbo)}
+.big.fav .gi{padding:12px 8px 8px;border-radius:9px}
+@media (prefers-reduced-motion:reduce){.fx b{animation:none}}
 </style>
 </head>
 <body>
@@ -184,10 +198,15 @@ const hue=a=>[...a].reduce((x,c)=>x*31+c.charCodeAt(0),7)%360;
 let LOGO={},STAND=null;
 const bd=(a,z=24)=>LOGO[a]?`<span class="bd" style="width:${z}px;height:${z}px;background:#fff;padding:2px;box-sizing:border-box"><img src="${LOGO[a]}" alt="" style="width:100%;height:100%;object-fit:contain" onerror="this.parentNode.style.cssText='width:${z}px;height:${z}px;background:hsl(${hue(a)} 55% 38%);font-size:${Math.round(z*.36)}px';this.parentNode.textContent='${a}'"></span>`:bd0(a,z);
 const bd0=(a,z=24)=>`<span class="bd" style="width:${z}px;height:${z}px;background:hsl(${hue(a)} 55% 38%);font-size:${Math.round(z*.36)}px" aria-hidden="true">${a}</span>`;
+const COL={ATL:['#E03A3E','#C1D32F'],BOS:['#007A33','#BA9653'],BKN:['#111111','#9A9A9A'],CHA:['#1D1160','#00A3B4'],CHI:['#CE1141','#111111'],CLE:['#860038','#FDBB30'],DAL:['#00538C','#B8C4CA'],DEN:['#0E2240','#FEC524'],DET:['#C8102E','#1D42BA'],GSW:['#1D428A','#FFC72C'],HOU:['#CE1141','#C4CED4'],IND:['#002D62','#FDBB30'],LAC:['#C8102E','#1D428A'],LAL:['#552583','#FDB927'],MEM:['#5D76A9','#12173F'],MIA:['#98002E','#F9A01B'],MIL:['#00471B','#EEE1C6'],MIN:['#0C2340','#78BE20'],NOP:['#0C2340','#C8102E'],NYK:['#006BB6','#F58426'],OKC:['#007AC1','#EF3B24'],ORL:['#0077C0','#C4CED4'],PHI:['#006BB6','#ED174C'],PHX:['#1D1160','#E56020'],POR:['#E03A3E','#111111'],SAC:['#5A2D81','#8A98A0'],SAS:['#C4CED4','#2B2B2B'],TOR:['#CE1141','#111111'],UTA:['#002B5C','#F9A01B'],WAS:['#002B5C','#E31837']};
+const fxs=g=>{const fa=favs.has(g.a),fh=favs.has(g.h);
+  const c=t=>{const k=COL[t]||['#888','#ccc'];return `--c1:${k[0]};--c2:${k[1]}`};
+  return fa&&fh?`<i class="fx a"><b style="${c(g.a)}"></b></i><i class="fx h"><b style="${c(g.h)}"></b></i>`:`<i class="fx"><b style="${c(fa?g.a:g.h)}"></b></i>`};
 function big(g){
   const live=g.st==='live',wa=!live&&g.sa>g.sh,wh=!live&&g.sh>g.sa;
   const side=(t,v,w,l)=>`<div class="side${w?' win':''}${l?' lose':''}">${bd(t,56)}<span>${NAME[t]}</span><span class="sc">${v}</span>${w?'<span class="wp">Ganó</span>':''}</div>`;
-  return `<div class="big${isFav(g)?' fav':''}"><div class="bg">${side(g.a,g.sa,wa,wh)}<div class="mid${live?' live':''}">${live?'<span class="dot"></span>En vivo':'Final'}</div>${side(g.h,g.sh,wh,wa)}</div><div class="foot"><span>${live?g.clk:dayLabel(key(g.t))+' '+hhmm(g.t)}</span><span class="tag ${g.p}">${PLAT[g.p]}</span></div></div>`;
+  const inner=`<div class="bg">${side(g.a,g.sa,wa,wh)}<div class="mid${live?' live':''}">${live?'<span class="dot"></span>En vivo':'Final'}</div>${side(g.h,g.sh,wh,wa)}</div><div class="foot"><span>${live?g.clk:dayLabel(key(g.t))+' '+hhmm(g.t)}</span><span class="tag ${g.p}">${PLAT[g.p]}</span></div>`;
+  return isFav(g)?`<div class="big fav">${fxs(g)}<div class="gi">${inner}</div></div>`:`<div class="big">${inner}</div>`;
 }
 function cr(g){
   const wa=g.sa>g.sh;
@@ -214,16 +233,17 @@ function group(list,desc){
 }
 function row(g){
   const live=g.st==='live',fin=g.st==='final';
-  const star=t=>favs.has(t)?'<span class="star" aria-label="equipo favorito">★ </span>':'';
+  const star=()=>'';
   const wa=fin&&g.sa>g.sh,wh=fin&&g.sh>g.sa;
   const left=live?`<div class="time live"><span class="dot"></span>En vivo<small>${g.clk}</small></div>`
     :fin?`<div class="time">Final<small>${hhmm(g.t)}</small></div>`
     :`<div class="time">${hhmm(g.t)}</div>`;
   const sc=(v)=>(live||fin)?`<span class="sc">${v}</span>`:'';
-  return `<div class="game ${g.p}${isFav(g)?' fav':''}">${left}
+  const inner=`${left}
    <div><div class="tm${wa?' w':''}"><span class="nm">${star(g.a)}${bd(g.a)}${NAME[g.a]}</span>${sc(g.sa)}</div>
    <div class="tm${wh?' w':''}"><span class="nm">${star(g.h)}${bd(g.h)}${NAME[g.h]}</span>${sc(g.sh)}</div></div>
-   <span class="tag ${g.p}">${PLAT[g.p]}</span></div>`;
+   <span class="tag ${g.p}">${PLAT[g.p]}</span>`;
+  return isFav(g)?`<div class="game ${g.p} fav">${fxs(g)}<div class="gi">${inner}</div></div>`:`<div class="game ${g.p}">${inner}</div>`;
 }
 function days(list,desc,empty){
   if(!list.length)return `<div class="empty">${empty}</div>`;
