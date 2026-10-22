@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Agenda NBA</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Ccircle%20cx='32'%20cy='32'%20r='30'%20fill='%23F26B1D'%20stroke='%23111'%20stroke-width='2'/%3E%3Cg%20fill='none'%20stroke='%23111'%20stroke-width='2.4'%3E%3Cpath%20d='M2%2032h60M32%202v60'/%3E%3Cpath%20d='M10%2010c14%2010%2014%2034%200%2044M54%2010c-14%2010-14%2034%200%2044'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icono.png">
+<meta name="theme-color" content="#111111">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
@@ -103,9 +106,31 @@ summary{font:700 22px/1 var(--fd);cursor:pointer;padding:6px 0}
 [hidden]{display:none!important}
 header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,#C8102E,#1D428A,#C8102E) 0 0/320px 100%;animation:bar 6s linear infinite}
 @keyframes bar{to{background-position:320px 0}}
-header svg{flex:none;animation:spin 8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){header::after,header svg{animation:none}}
+header svg{flex:none}
+@media (prefers-reduced-motion:reduce){header::after{animation:none}}
+.bx{overflow:visible;margin:-10px 0 -12px}
+.bx .hb,.bx .hf{opacity:0}
+.bx .my{transform-origin:45px 92px}
+.bx .ms,.bx .mr{transform-origin:45px 62px}
+.bx .sh{transform-origin:45px 94px}
+.bx .nt{transform-origin:128px 36px}
+.bx .mx{animation:mx 12s linear infinite}
+.bx .my{animation:my 12s linear infinite}
+.bx .ms{animation:ms 12s linear infinite}
+.bx .mr{animation:mr 12s linear infinite}
+.bx .mo{animation:mo 12s linear infinite}
+.bx .sh{animation:sd 12s linear infinite}
+.bx .hb,.bx .hf{animation:ho 12s linear infinite}
+.bx .nt{animation:nt 12s linear infinite}
+@keyframes mx{0%{transform:translateX(0px)}68.5%{transform:translateX(0px)}77.667%{transform:translateX(83px)}80.583%{transform:translateX(83px)}81%{transform:translateX(0px)}100%{transform:translateX(0px)}}
+@keyframes my{0%{transform:translateY(0px) scale(1,1)}0.833%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}3.833%{transform:translateY(-24px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}6.833%{transform:translateY(0px) scale(1.12,0.88);animation-timing-function:ease-out}7.25%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}10.25%{transform:translateY(-24px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}13.25%{transform:translateY(0px) scale(1.12,0.88);animation-timing-function:ease-out}13.667%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}16.667%{transform:translateY(-24px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}19.667%{transform:translateY(0px) scale(1.12,0.88);animation-timing-function:ease-out}20.083%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}23.083%{transform:translateY(-24px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}26.083%{transform:translateY(0px) scale(1.12,0.88);animation-timing-function:ease-out}26.5%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}29.833%{transform:translateY(-30px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}32.143%{transform:translateY(0px) scale(1.1,0.9);animation-timing-function:ease-out}32.477%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}35.333%{transform:translateY(-30px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}37.643%{transform:translateY(0px) scale(1.1,0.9);animation-timing-function:ease-out}37.977%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}40.833%{transform:translateY(-30px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}43.143%{transform:translateY(0px) scale(1.1,0.9);animation-timing-function:ease-out}43.477%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}46.333%{transform:translateY(-30px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}48.643%{transform:translateY(0px) scale(1.1,0.9);animation-timing-function:ease-out}48.977%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}51.833%{transform:translateY(-30px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}54.143%{transform:translateY(0px) scale(1.1,0.9);animation-timing-function:ease-out}54.477%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}57.333%{transform:translateY(-30px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}59.643%{transform:translateY(0px) scale(1.1,0.9);animation-timing-function:ease-out}59.977%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}62.833%{transform:translateY(-30px) scale(1,1);animation-timing-function:cubic-bezier(.6,0,.8,.3)}65.167%{transform:translateY(0px) scale(1.1,0.9);animation-timing-function:ease-out}65.583%{transform:translateY(0px) scale(1,1)}68.5%{transform:translateY(0px) scale(1,1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}74.333%{transform:translateY(-42px) scale(1,1);animation-timing-function:ease-in}77.667%{transform:translateY(-28px) scale(1,1);animation-timing-function:ease-in}80.583%{transform:translateY(4px) scale(1,1)}81%{transform:translateY(0px) scale(1,1)}100%{transform:translateY(0px) scale(1,1)}}
+@keyframes ms{0%{transform:scale(1)}68.5%{transform:scale(1);animation-timing-function:ease-out}77.667%{transform:scale(.42)}80.583%{transform:scale(.42)}81%{transform:scale(1)}100%{transform:scale(1)}}
+@keyframes mr{0%{transform:rotate(0deg)}26.5%{transform:rotate(720deg)}68.5%{transform:rotate(720deg)}77.667%{transform:rotate(1080deg)}100%{transform:rotate(1080deg)}}
+@keyframes mo{0%{opacity:1}79.333%{opacity:1}80.583%{opacity:0}85.167%{opacity:0}87.667%{opacity:1}100%{opacity:1}}
+@keyframes sd{0%{transform:scaleX(1.0);opacity:0.3}0.833%{transform:scaleX(1.0);opacity:0.3}3.833%{transform:scaleX(0.68);opacity:0.16}6.833%{transform:scaleX(1.0);opacity:0.3}7.25%{transform:scaleX(1.0);opacity:0.3}10.25%{transform:scaleX(0.68);opacity:0.16}13.25%{transform:scaleX(1.0);opacity:0.3}13.667%{transform:scaleX(1.0);opacity:0.3}16.667%{transform:scaleX(0.68);opacity:0.16}19.667%{transform:scaleX(1.0);opacity:0.3}20.083%{transform:scaleX(1.0);opacity:0.3}23.083%{transform:scaleX(0.68);opacity:0.16}26.083%{transform:scaleX(1.0);opacity:0.3}26.5%{transform:scaleX(1.0);opacity:0.3}29.833%{transform:scaleX(0.6);opacity:0.12}32.143%{transform:scaleX(1.0);opacity:0.3}32.477%{transform:scaleX(1.0);opacity:0.3}35.333%{transform:scaleX(0.6);opacity:0.12}37.643%{transform:scaleX(1.0);opacity:0.3}37.977%{transform:scaleX(1.0);opacity:0.3}40.833%{transform:scaleX(0.6);opacity:0.12}43.143%{transform:scaleX(1.0);opacity:0.3}43.477%{transform:scaleX(1.0);opacity:0.3}46.333%{transform:scaleX(0.6);opacity:0.12}48.643%{transform:scaleX(1.0);opacity:0.3}48.977%{transform:scaleX(1.0);opacity:0.3}51.833%{transform:scaleX(0.6);opacity:0.12}54.143%{transform:scaleX(1.0);opacity:0.3}54.477%{transform:scaleX(1.0);opacity:0.3}57.333%{transform:scaleX(0.6);opacity:0.12}59.643%{transform:scaleX(1.0);opacity:0.3}59.977%{transform:scaleX(1.0);opacity:0.3}62.833%{transform:scaleX(0.6);opacity:0.12}65.167%{transform:scaleX(1.0);opacity:0.3}65.583%{transform:scaleX(1.0);opacity:0.3}68.5%{transform:scaleX(1);opacity:.3}74.333%{transform:scaleX(.6);opacity:.1}79.333%{transform:scaleX(.6);opacity:.03}87.667%{transform:scaleX(.6);opacity:.03}89.75%{transform:scaleX(1);opacity:.3}100%{transform:scaleX(1.0);opacity:0.3}}
+@keyframes ho{0%{opacity:0}64.75%{opacity:0}67.667%{opacity:1}84.333%{opacity:1}88.5%{opacity:0}100%{opacity:0}}
+@keyframes nt{0%{transform:scale(1,1)}77.667%{transform:scale(1,1)}79.333%{transform:scale(.9,1.2)}81.417%{transform:scale(1.06,.93)}83.5%{transform:scale(.98,1.04)}86%{transform:scale(1,1)}100%{transform:scale(1,1)}}
+@media (prefers-reduced-motion:reduce){.bx *{animation:none!important}}
 
 .game.fav,.big.fav{position:relative;overflow:hidden;display:block;padding:4px;border:0;box-shadow:none}
 .fx{position:absolute;inset:0;overflow:hidden}
@@ -125,13 +150,25 @@ header svg{flex:none;animation:spin 8s linear infinite}
 #pLab{flex:1;text-align:center;font:600 18px/1.1 var(--fd)}
 .rec{color:var(--mute);font-size:14px;margin:10px 0 0}
 .more{display:block;margin:16px auto 0}
+.pc .dt{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;background:var(--c,var(--none));outline:1.5px solid rgba(128,128,128,.55)}
+.tb{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sr{display:grid;grid-template-columns:26px 1fr 34px 34px 50px;align-items:center;gap:6px;padding:8px 10px;background:var(--surface);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:15px;position:relative}
+.sr:last-child{border-bottom:0}
+.sr>span{position:relative;text-align:right}
+.sr>.mu,.sr>.nm{text-align:left}
+.sr .mu{color:var(--mute)}
+.sr.hd{font:600 14px/1 var(--fd);color:var(--mute)}
+.sr.fav{overflow:hidden;font-weight:600}
+.sr .fx{opacity:.38}
+.sr.cut{border-bottom:2px solid var(--ink)}
+.sr.cut2{border-bottom:2px dashed var(--mute)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div><h1>Agenda NBA</h1><div class="sub">Horario de Argentina</div></div>
-    <svg viewBox="0 0 64 64" width="54" height="54" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#F26B1D" stroke="#111" stroke-width="2"/><g fill="none" stroke="#111" stroke-width="2.4"><path d="M2 32h60M32 2v60"/><path d="M10 10c14 10 14 34 0 44M54 10c-14 10-14 34 0 44"/></g></svg>
+    <svg class="bx" viewBox="0 0 160 100" width="136" height="85" aria-hidden="true"><defs><radialGradient id="bg" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#FF9348"/><stop offset="1" stop-color="#D4560F"/></radialGradient></defs><g class="hb"><rect x="147" y="8" width="4" height="34" rx="2" fill="#F6F3EE"/><path d="M114 34H147" stroke="#E4572E" stroke-width="3.5" stroke-linecap="round"/></g><ellipse class="sh" cx="45" cy="94" rx="20" ry="3.5" fill="#F26B1D"/><g class="mx"><g class="my"><g class="ms"><g class="mo"><circle cx="45" cy="62" r="30" fill="url(#bg)" stroke="#111" stroke-width="2"/><g class="mr"><g fill="none" stroke="#111" stroke-width="2.4"><path d="M15 62h60M45 32v60"/><path d="M23.6 41C35 52 35 72 23.6 83M66.4 41C55 52 55 72 66.4 83"/></g></g></g></g></g></g><g class="hf"><circle cx="114.5" cy="34" r="2.6" fill="#E4572E"/><circle cx="142" cy="34" r="2.6" fill="#E4572E"/><g class="nt" fill="none" stroke="#F6F3EE" stroke-width="1.1" opacity=".9"><path d="M115 36L121 58M121 36.5L124.5 58M128 36.5V58M135 36.5L131.5 58M141 36L135 58M117.6 47H138.4M119.6 53H136.4"/></g></g></svg>
   </header>
   <div class="demo">Partidos reales con horario de Argentina. Las plataformas salen de lo que muestran HBO Max, Disney+ y Prime hasta hoy; lo que no aparece todavía no está cargado. Al destildar el filtro se ven también los partidos solo de League Pass (lista parcial hasta que conectemos los datos completos). Resultados y posiciones se llenan cuando empiece la temporada.</div>
   <nav role="tablist" id="tabs">
@@ -140,7 +177,10 @@ header svg{flex:none;animation:spin 8s linear infinite}
     <button role="tab" data-tab="posiciones" aria-selected="false">Posiciones</button>
   </nav>
   <div class="ctrl" id="ctrl">
-    <button class="chip" id="fPlat" aria-pressed="true">Solo con transmisión</button>
+    <button class="chip pc" data-p="disney" aria-pressed="true"><i class="dt" style="--c:var(--disney)"></i>Disney+</button>
+    <button class="chip pc" data-p="prime" aria-pressed="true"><i class="dt" style="--c:var(--prime)"></i>Prime Video</button>
+    <button class="chip pc" data-p="hbo" aria-pressed="true"><i class="dt" style="--c:var(--hbo)"></i>HBO Max</button>
+    <button class="chip pc" data-p="none" aria-pressed="false"><i class="dt"></i>Solo League Pass</button>
     <button class="chip" id="bTeams" aria-pressed="false">Elegir mis equipos</button>
   </div>
   <div class="ctrl" id="rctrl" hidden><select id="selT" class="sel" aria-label="Filtrar por equipo"></select>
@@ -197,9 +237,13 @@ const dayDate=k=>{const n=dayDiff(k);return new Date(Date.UTC(Y,M-1,D+n,12)).toL
 
 let favs=new Set();
 try{favs=new Set(JSON.parse(localStorage.getItem('nba_favs')||'[]'))}catch(e){}
+let PL=new Set(['disney','prime','hbo']);
+try{const q=JSON.parse(localStorage.getItem('nba_plats')||'null');if(Array.isArray(q))PL=new Set(q)}catch(e){}
+const savePL=()=>{try{localStorage.setItem('nba_plats',JSON.stringify([...PL]))}catch(e){}};
+const pk=g=>['disney','prime','hbo'].includes(g.p)?g.p:'none';
 const saveFavs=()=>{try{localStorage.setItem('nba_favs',JSON.stringify([...favs]))}catch(e){}};
 let listo=false;
-const S={tab:'agenda',plat:true,team:'all',panel:false,per:'sem',off:0,more:0};
+const S={tab:'agenda',team:'all',panel:false,per:'sem',off:0,more:0};
 const $=id=>document.getElementById(id);
 const isFav=g=>favs.has(g.a)||favs.has(g.h);
 const hue=a=>[...a].reduce((x,c)=>x*31+c.charCodeAt(0),7)%360;
@@ -268,10 +312,11 @@ function days(list,desc,empty){
   return group(list,desc).map(([k,gs])=>`<section class="day"><h2>${dayLabel(k)}</h2><div class="date">${dayDate(k)}</div>${gs.sort((a,b)=>a.t-b.t).map(row).join('')}</section>`).join('');
 }
 function standings(){
+  const fxt=a=>{const k=COL[a]||['#888','#ccc'];return `<i class="fx"><b style="--c1:${k[0]};--c2:${k[1]}"></b></i>`};
   const tbl=(arr,label)=>{
-    const rows=arr.map(([a,n,w,l],i)=>{const pj=w+l;
-      return `<tr class="${favs.has(a)?'fav':''}${i===5?' cut':''}${i===9?' cut2':''}"><td>${i+1}</td><td><span class="nm">${favs.has(a)?'<span class="star">★ </span>':''}${bd(a,22)}${n}</span></td><td>${w}</td><td>${l}</td><td>${pj?(w/pj).toFixed(3).replace(/^0/,''):'–'}</td></tr>`}).join('');
-    return `<h2 class="conf">${label}</h2><div class="scroll"><table><thead><tr><th>#</th><th>Equipo</th><th>G</th><th>P</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const rows=arr.map(([a,n,w,l],i)=>{const pj=w+l,f=favs.has(a);
+      return `<div class="sr${f?' fav':''}${i===5?' cut':''}${i===9?' cut2':''}">${f?fxt(a):''}<span class="mu">${i+1}</span><span class="nm">${bd(a,22)}${n}</span><span>${w}</span><span>${l}</span><span>${pj?(w/pj).toFixed(3).replace(/^0/,''):'–'}</span></div>`}).join('');
+    return `<h2 class="conf">${label}</h2><div class="tb"><div class="sr hd"><span class="mu">#</span><span class="nm">Equipo</span><span>G</span><span>P</span><span>%</span></div>${rows}</div>`;
   };
   const ord=(k,b)=>STAND&&STAND[k]&&STAND[k].length?STAND[k].map(x=>[x.a,NAME[x.a]||x.a,x.w,x.l]):b.map(([a,n])=>[a,n,0,0]);
   return tbl(ord('E',TEAMS.E),'Conferencia Este')+tbl(ord('W',TEAMS.W),'Conferencia Oeste')+'<p class="legend">Línea llena: clasificados directos a playoffs (1 a 6). Línea punteada: zona de play-in (7 a 10).</p>';
@@ -288,7 +333,7 @@ function render(){
     [['pDia','dia'],['pSem','sem'],['pMes','mes']].forEach(([id,v])=>$(id).setAttribute('aria-pressed',S.per===v));
     $('pPrev').disabled=P.a<=minK;$('pNext').disabled=S.off>=0;
   }
-  $('fPlat').setAttribute('aria-pressed',S.plat);
+  document.querySelectorAll('.pc').forEach(b=>b.setAttribute('aria-pressed',PL.has(b.dataset.p)));
   $('bTeams').setAttribute('aria-pressed',S.panel);
   $('bTeams').textContent=favs.size?`Mis equipos (${favs.size})`:'Elegir mis equipos';
   $('panel').hidden=!(S.panel&&S.tab==='agenda');
@@ -299,7 +344,7 @@ function render(){
   let h='';
   if(S.tab==='agenda'){
     let l=GAMES.filter(g=>g.st==='live'||(g.st==='sched'&&key(g.t)>=todayK));
-    if(S.plat)l=l.filter(g=>g.p!=='none');
+    l=l.filter(g=>PL.has(pk(g)));
     const tomK=key(new Date(Date.UTC(Y,M-1,D+1,12))),gr=group(l,false);
     const rest=gr.filter(([k])=>k>tomK),shown=gr.filter(([k])=>k<=tomK).concat(rest.slice(0,S.more));
     h=days(shown.flatMap(([k,gs])=>gs),false,'No hay partidos con estos filtros. Probá sacar alguno.');
@@ -311,7 +356,7 @@ function render(){
   $('main').innerHTML=listo?h:'<div class="empty">Cargando…</div>';
 }
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.tab=b.dataset.tab;render()});
-$('fPlat').onclick=()=>{S.plat=!S.plat;render()};
+$('ctrl').addEventListener('click',e=>{const b=e.target.closest('.pc');if(!b)return;const q=b.dataset.p;PL.has(q)?PL.delete(q):PL.add(q);savePL();render()});
 $('selT').onchange=e=>{S.team=e.target.value;render()};
 [['pDia','dia'],['pSem','sem'],['pMes','mes']].forEach(([id,v])=>$(id).onclick=()=>{S.per=v;S.off=0;render()});
 $('pPrev').onclick=()=>{S.off--;render()};
